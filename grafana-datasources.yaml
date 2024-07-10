@@ -36,4 +36,6 @@ datasources:
     isDefault: false
     version: 1
     editable: false
-
+    jsonData:
+      esVersion: 70
+      timeField: '@timestamp'

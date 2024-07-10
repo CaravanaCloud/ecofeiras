@@ -20,6 +20,9 @@ services:
       - zipkin-all-in-one
       - prometheus
       - grafana
+    networks:
+      - grafana
+      - otel
 
   prometheus:
     image: prom/prometheus:latest
@@ -30,6 +33,9 @@ services:
       - --config.file=/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
+    networks:
+      - grafana
+      - otel
     
 
   grafana:
@@ -40,6 +46,8 @@ services:
       - ./grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yml
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - grafana
 
 
   # Zipkin
@@ -50,6 +58,9 @@ services:
       - JAVA_OPTS=-Xms1024m -Xmx1024m -XX:+ExitOnOutOfMemoryError
     ports:
       - "9411:9411"
+    networks:
+      - grafana
+      - otel
  
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
@@ -60,6 +71,7 @@ services:
       discovery.type: "single-node"
       cluster.routing.allocation.disk.threshold_enabled: false
     networks:
+      - grafana
       - graylog
 
   mongo:
@@ -102,3 +114,8 @@ volumes:
 networks:
   graylog:
     driver: bridge
+  grafana:
+    driver: bridge
+  otel:
+    driver: bridge
+ 
